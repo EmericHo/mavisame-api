@@ -1,0 +1,228 @@
+openapi: 3.0.0
+info:
+  title: Quiz API
+  version: 1.0.0
+  description: API for a quiz application with Twitch authentication
+
+paths:
+  /users/twitch/userinfo:
+    get:
+      summary: Get Twitch user info
+      operationId: getUserInfo
+      tags:
+        - user
+      responses:
+        '200':
+          description: Successfully retrieved user info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TwitchUserInfo'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+
+  /questions:
+    post:
+      summary: Create a new question
+      operationId: createQuestion
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+      responses:
+        '201':
+          description: Question created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          description: Invalid input
+    get:
+      summary: Get all questions
+      operationId: getAllQuestions
+      responses:
+        '200':
+          description: A list of questions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Question'
+
+  /questions/{id}:
+    get:
+      summary: Get a question by ID
+      operationId: getQuestionById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Question retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '404':
+          description: Question not found
+    put:
+      summary: Update a question by ID
+      operationId: updateQuestion
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+      responses:
+        '200':
+          description: Question updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+        '400':
+          description: Invalid input
+        '404':
+          description: Question not found
+
+  /scores:
+    get:
+      summary: Get all scores
+      operationId: getAllScores
+      responses:
+        '200':
+          description: A list of scores
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Score'
+
+  /scores/{id}:
+    get:
+      summary: Get a score by ID
+      operationId: getScoreById
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Score retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Score'
+        '404':
+          description: Score not found
+
+  /users/{id}/profile:
+    get:
+      summary: Get user profile by ID
+      operationId: getUserProfile
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: User profile retrieved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '404':
+          description: User not found
+
+components:
+  schemas:
+    Question:
+      type: object
+      properties:
+        id:
+          type: string
+        question:
+          type: string
+        options:
+          type: array
+          items:
+            type: string
+        answer:
+          type: string
+
+    Score:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        score:
+          type: integer
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        username:
+          type: string
+        email:
+          type: string
+        avatarUrl:
+          type: string
+
+    TwitchUserInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The ID of the user
+        login:
+          type: string
+          description: The login name of the user
+        display_name:
+          type: string
+          description: The display name of the user
+        type:
+          type: string
+          description: The type of the user
+        broadcaster_type:
+          type: string
+          description: The broadcaster type of the user
+        description:
+          type: string
+          description: The description of the user
+        profile_image_url:
+          type: string
+          description: The profile image URL of the user
+        offline_image_url:
+          type: string
+          description: The offline image URL of the user
+        view_count:
+          type: integer
+          description: The view count of the user
+        email:
+          type: string
+          description: The email of the user
